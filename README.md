@@ -9,10 +9,11 @@ python3 -m venv venv
 # Run the script to activate the virtual environment
 source ./activate_venv.sh
 ```
+
 ## Pipeline
 
 ```txt
-heart-attack-risk/
+cardio-score/
 ├─ README.md
 ├─ requirements.txt
 ├─ .gitignore
