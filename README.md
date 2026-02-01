@@ -20,13 +20,13 @@
 
 ## Motivation
 
-Cardiovascular disease remains the leading cause of mortality globally, yet many of its risk factors—such as smoking, physical inactivity, and sleep patterns—are modifiable with early intervention. However, traditional medical screenings can be expensive, time-consuming, or inaccessible, leading many individuals to ignore early warning signs until a critical event occurs.
+Cardiovascular disease remains the leading cause of mortality globally, yet many of its risk factors such as smoking, physical inactivity, and sleep patterns—are modifiable with early intervention. However, traditional medical screenings can be expensive, time-consuming, or inaccessible, leading many individuals to ignore early warning signs until a critical event occurs.
 
 **Cardio-Score** serves as a bridge between complex medical data and personal health awareness. We developed this platform to democratize early screening, allowing anyone to assess their heart attack risk in seconds using non-invasive, self-reportable metrics.
 
 Our system employs a **Hybrid AI Approach**:
 
-1.  **Robust Prediction:** We utilize two complementary models—**Logistic Regression** (optimized for high recall to ensure at-risk patients aren't missed) and **XGBoost** (for high accuracy on complex, non-linear patient data).
+1.  **Robust Prediction:** We use two complementary models—**Logistic Regression** (optimized for high recall to ensure at-risk patients aren't missed) and **XGBoost** (for high accuracy on complex, non-linear patient data).
 2.  **Personalized Care:** Unlike standard calculators that output a scary number, we integrate **Generative AI (Gemini)** to act as a virtual health consultant, translating raw risk probabilities into compassionate, actionable, and personalized lifestyle advice.
 
 By making risk assessment instant and understandable, we aim to encourage proactive healthcare and motivate users to make life-saving lifestyle changes.
@@ -46,6 +46,10 @@ python3 -m venv venv
 
 # Run the script to activate the virtual environment
 source ./activate_venv.sh
+
+# Train the each model and saved to models folder
+python -m src.train_lr # Training Logistic Regression model
+python -m src.train_xgb # Training XGBoost model
 
 # Run the streamlit application
 streamlit run app.py
