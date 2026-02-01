@@ -7,8 +7,9 @@ preprocessing.py
     - XGBoost:            scale_numeric=False
 
 expected raw columns:
-age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang,
-oldpeak, slope, ca, thal, target
+Sex, GeneralHealth, PhysicalActivities, SleepHours, HadHeartAttack,
+SmokerStatus, RaceEthnicityCategory, AgeCategory, HeightInMeters,
+WeightInKilograms, AlcoholDrinkers
 """
 
 from typing import List, Optional, Tuple
@@ -22,30 +23,28 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.config import TARGET_COLUMN
 
 
-# feature def
+# feature definitions
 
-# numeric / continuous features (including ca)
+# numeric / continuous features
 NUMERIC_FEATURES: List[str] = [
-    "age",
-    "trestbps",  # resting blood pressure
-    "chol",      # serum cholesterol
-    "thalach",   # maximum heart rate achieved
-    "oldpeak",   # ST depression induced by exercise
-    "ca",        # number of major vessels (0–3)
+    "SleepHours",         # hours of sleep per night
+    "HeightInMeters",     # height in meters
+    "WeightInKilograms",  # weight in kilograms
 ]
 
+# binary features (will be converted to 0/1)
 BINARY_FEATURES: List[str] = [
-    "sex",   # 0 = female, 1 = male (dataset-dependent)
-    "fbs",   # fasting blood sugar > 120 mg/dl
-    "exang"  # exercise-induced angina
+    "Sex",                  # Male/Female
+    "PhysicalActivities",   # Yes/No
+    "AlcoholDrinkers"       # Yes/No
 ]
 
-# one-hot encoded
+# categorical features (one-hot encoded)
 CATEGORICAL_FEATURES: List[str] = [
-    "cp",       # chest pain type
-    "restecg",  # resting ECG results
-    "slope",    # slope of peak exercise ST segment
-    "thal",     # thalassemia
+    "GeneralHealth",          # Excellent, Very good, Good, Fair, Poor
+    "SmokerStatus",           # Never smoked, Former smoker, Current smoker, etc.
+    "RaceEthnicityCategory",  # race/ethnicity categories
+    "AgeCategory",            # age ranges
 ]
 
 ALL_FEATURES: List[str] = NUMERIC_FEATURES + BINARY_FEATURES + CATEGORICAL_FEATURES
@@ -56,7 +55,7 @@ def make_preprocessor(scale_numeric: bool) -> ColumnTransformer:
     """
     columnTransformer:
     - numeric: median impute (+ optional scaling)
-    - binary: most_frequent impute
+    - binary: most_frequent impute + convert to 0/1
     - categorical: most_frequent impute + one-hot encode (no drop)
     """
 
@@ -75,10 +74,18 @@ def make_preprocessor(scale_numeric: bool) -> ColumnTransformer:
             ]
         )
 
-    # binary pipeline
+    # binary pipeline (impute + will handle string to binary conversion)
     binary_pipe = Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="most_frequent")),
+            (
+                "onehot",
+                OneHotEncoder(
+                    drop="if_binary",  # for binary features, drop one category
+                    handle_unknown="ignore",
+                    sparse_output=False,
+                ),
+            ),
         ]
     )
 
@@ -89,7 +96,7 @@ def make_preprocessor(scale_numeric: bool) -> ColumnTransformer:
             (
                 "onehot",
                 OneHotEncoder(
-                    drop=None,
+                    drop=None,  # keeping all categories for multi-class features
                     handle_unknown="ignore",
                     sparse_output=False,
                 ),
@@ -121,7 +128,7 @@ def load_xy(
     """
     df = pd.read_csv(csv_path)
     
-    # drop duplicate rows (keep first occurrence)
+    # drop duplicates
     original_len = len(df)
     df = df.drop_duplicates()
     if len(df) < original_len:
@@ -132,16 +139,23 @@ def load_xy(
     if missing:
         raise ValueError(f"Missing required columns in CSV: {missing}")
 
+    # drop rows where target is missing
+    before_drop = len(df)
+    df = df.dropna(subset=[target])
+    if len(df) < before_drop:
+        print(f"Dropped {before_drop - len(df)} rows with missing target values")
+
     X = df[cols].copy()
     y = df[target].copy()
     
-    # convert target to binary (1/0) if it's "Yes"/"No" strings
+    # converting to 1/0
     if y.dtype == 'object':
-        # handling different variations
-        y = y.str.strip().str.lower().map({'yes': 1, 'no': 0})
-        if y.isnull().any():
-            raise ValueError(f"Target column '{target}' contains values other than 'Yes'/'No'")
-        y = y.astype(int)
+        # handling yes/no
+        y_mapped = y.str.strip().str.lower().map({'yes': 1, 'no': 0})
+        if y_mapped.isnull().any():
+            invalid_values = y[y_mapped.isnull()].unique()
+            raise ValueError(f"Target column '{target}' contains unexpected values: {invalid_values}")
+        y = y_mapped.astype(int)
         print(f"Converted target '{target}' from Yes/No to 1/0")
 
     return X, y
