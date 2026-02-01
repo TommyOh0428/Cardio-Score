@@ -145,11 +145,14 @@ if __name__ == "__main__":
     print(f"Loading test data from: {args.test_data}")
     df = pd.read_csv(args.test_data)
     
+    # Drop rows with missing target values
+    df = df.dropna(subset=[args.target])
+    
     # Separate features and target
     y_test = df[args.target]
     
     # Convert target to numeric if it's Yes/No
-    if y_test.dtype == 'object' and set(y_test.unique()) <= {'Yes', 'No', 'yes', 'no'}:
+    if y_test.dtype == 'object':
         y_test = (y_test.str.lower() == 'yes').astype(int)
         print(f"Converted target '{args.target}' from Yes/No to 1/0")
     
