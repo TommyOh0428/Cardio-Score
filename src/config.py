@@ -10,7 +10,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 # File paths
-RAW_DATA_PATH = os.path.join(DATA_DIR, 'raw/heart.csv')
+RAW_DATA_PATH = os.path.join(DATA_DIR, 'raw/heart_2022_with_nans.csv')
 PROCESSED_DATA_PATH = os.path.join(DATA_DIR, 'processed/processed_heart.csv')
 LR_MODEL_PATH = os.path.join(MODELS_DIR, 'logistic_regression.joblib')
 XGB_MODEL_PATH = os.path.join(MODELS_DIR, 'xgboost_model.joblib')

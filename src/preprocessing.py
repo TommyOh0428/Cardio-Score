@@ -19,7 +19,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-from config import TARGET_COLUMN
+from src.config import TARGET_COLUMN
 
 
 # feature def
@@ -120,6 +120,12 @@ def load_xy(
     preprocessing applied later inside sklearn pipelines
     """
     df = pd.read_csv(csv_path)
+    
+    # drop duplicate rows (keep first occurrence)
+    original_len = len(df)
+    df = df.drop_duplicates()
+    if len(df) < original_len:
+        print(f"Dropped {original_len - len(df)} duplicate rows ({(original_len - len(df))/original_len*100:.1f}%)")
 
     cols = feature_cols if feature_cols is not None else ALL_FEATURES
     missing = [c for c in cols + [target] if c not in df.columns]
