@@ -21,7 +21,7 @@ RANDOM_STATE = 42
 TEST_SIZE = 0.2
 
 # Target defines "Did the patient have a heart attack?"
-TARGET_COLUMN = 'target' # Assumed target column name
+TARGET_COLUMN = 'HadHeartAttack' # Assumed target column name
 
 FEATURE_COLUMNS = [
     'age',

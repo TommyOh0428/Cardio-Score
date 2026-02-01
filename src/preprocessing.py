@@ -134,5 +134,14 @@ def load_xy(
 
     X = df[cols].copy()
     y = df[target].copy()
+    
+    # convert target to binary (1/0) if it's "Yes"/"No" strings
+    if y.dtype == 'object':
+        # handling different variations
+        y = y.str.strip().str.lower().map({'yes': 1, 'no': 0})
+        if y.isnull().any():
+            raise ValueError(f"Target column '{target}' contains values other than 'Yes'/'No'")
+        y = y.astype(int)
+        print(f"Converted target '{target}' from Yes/No to 1/0")
 
     return X, y
