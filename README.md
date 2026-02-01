@@ -1,4 +1,5 @@
 <h4 align="center">
+    <img src="img/logo.png" width="250" alt="Cardio Score Logo"><br>
     Cardio Score<br>
     SystemHacks XHacks
     <div align="center">
@@ -13,9 +14,7 @@
     <a href="#motivation">Motivation</a> •
     <a href="#team-member">Team Members</a> •
     <a href="#how-to-run-virtual-environment">Set Up</a> •
-    <a href="#file-structure">Project Structure</a> •
-    <a href="#setting-up">setup</a> •
-    <a href="#contribution">Contribution</a>
+    <a href="#file-structure">Project Structure</a> 
 </p>
 
 ## Motivation
