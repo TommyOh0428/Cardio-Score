@@ -3,6 +3,12 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+import requests
+import json
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # page config
 st.set_page_config(
@@ -10,6 +16,52 @@ st.set_page_config(
     page_icon="🫀",
     layout="wide"
 )
+
+def getGemeniResponse(prompt, system="you are a family doctor who can advise patients on heart attack prevention."):
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    
+    # Try getting from streamlit secrets as fallback
+    if not api_key and hasattr(st, "secrets"):
+         try:
+            api_key = st.secrets["OPENROUTER_API_KEY"]
+         except:
+            pass
+
+    if not api_key:
+        st.error("API key for OpenRouter is not set. Set OPENROUTER_API_KEY env var or in .streamlit/secrets.toml")
+        return "AI advice unavailable due to missing API key."
+    
+    try:
+        response = requests.post(
+            url = "https://openrouter.ai/api/v1/chat/completions",
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            data = json.dumps({
+                "model": "google/gemini-3-flash-preview", 
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": prompt}
+                ]
+            })
+        )
+        
+        if response.status_code != 200:
+            st.error(f"API Request Failed (Status {response.status_code}): {response.text}")
+            return "AI advice unavailable due to API error."
+
+        response_data = response.json()
+        
+        if 'choices' not in response_data:
+             st.error(f"Unexpected API response format: {response_data}")
+             return "AI advice unavailable."
+
+        return response_data['choices'][0]['message']['content']
+        
+    except Exception as e:
+        st.error(f"Error fetching AI advice: {str(e)}")
+        return "AI advice unavailable."
 
 @st.cache_resource
 def load_models():
@@ -231,6 +283,11 @@ with tab1:
         # recommendations
         st.markdown("---")
         st.subheader("💡 Recommendations")
+        
+        prompt = f"Provide personalized heart attack prevention advice for a patient with an average risk of {avg_percentage:.1f}%."
+
+        advice = getGemeniResponse(prompt)
+        st.markdown(advice)
         
         if avg_percentage >= 60:
             st.error("""
