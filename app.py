@@ -326,8 +326,8 @@ st.markdown(
     """
     <div style='text-align: center; color: #666;'>
         <p><strong>Cardio-Score</strong> - AI Heart Attack Risk Predictor<br>
-        Tech Stack: Python, scikit-learn, XGBoost, Streamlit, Pandas, NumPy, Joblib<br>
-        Trained on 379,734 patient records | 81% ROC-AUC Performance</p>
+        Made by Alex Chung & Tommy Oh & Yoon You & Bedro Park
+        </p>
     </div>
     """,
     unsafe_allow_html=True

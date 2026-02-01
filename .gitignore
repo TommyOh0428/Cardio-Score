@@ -1,6 +1,5 @@
 venv/
-models/*.joblib
 __pycache__/
 .DS_Store
-
 training.log
+*.pyc
