@@ -2,11 +2,31 @@ import joblib
 import pandas as pd
 from src.preprocessing import make_preprocessor
 from src.config import FEATURE_COLUMNS
+from src.train_xgb import train_xgboost
+from src.train_lr import train_logistic_regression
+from src.utils import logger
 
 model_paths = {
     'lr_model': 'models/logistic_regression.joblib',
     'xgb_model': 'models/xgboost_model.joblib'
 }
+
+def train_both_models():
+    """Train both Logistic Regression and XGBoost models."""
+    logger.info("Training Pipeline Started...")
+    
+    # Train both models
+    logger.info("\n" + "="*60)
+    logger.info("TRAINING LOGISTIC REGRESSION")
+    logger.info("="*60)
+    train_logistic_regression()
+    
+    logger.info("\n" + "="*60)
+    logger.info("TRAINING XGBOOST")
+    logger.info("="*60)
+    train_xgboost()
+    
+    logger.info("Training Pipeline Finished.")
 
 # Load preprocessors (created once, reused)
 _lr_preprocessor = None
