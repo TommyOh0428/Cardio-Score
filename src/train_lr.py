@@ -1,62 +1,58 @@
+import os
 import joblib
-import pandas as pd
-from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report, roc_auc_score
 from sklearn.model_selection import train_test_split
 
-# Import from your existing files
-from config import (
-    DATA_PATH, TARGET_COLUMN, LR_PARAMS, 
-    RANDOM_STATE, TEST_SIZE, LR_MODEL_PATH
+# Import from your project structure
+from src.preprocessing import load_xy, make_preprocessor
+from src.config import (
+    RAW_DATA_PATH, LR_MODEL_PATH, RANDOM_STATE, 
+    FEATURE_COLUMNS, TARGET_COLUMN, TEST_SIZE
 )
-from preprocessing import make_preprocessor, load_xy, ALL_FEATURES
+from src.utils import logger
 
-def train():
-    # 1. Load Data using your helper
-    X, y = load_xy(DATA_PATH)
+def train_logistic_regression():
+    logger.info("Starting Logistic Regression Training Pipeline...")
 
-    # 2. Split Data
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
-    )
-    # 3. Build Pipeline
-    # For Logistic Regression, scale_numeric MUST be True
-    preprocessor = make_preprocessor(scale_numeric=True)
+    # 1. Load Data
+    data_X, data_y = load_xy(RAW_DATA_PATH, target=TARGET_COLUMN, feature_cols=FEATURE_COLUMNS)
     
-    lr_pipeline = Pipeline(steps=[  
-        ('preprocessor', preprocessor),
-        ('classifier', LogisticRegression(
-            **LR_PARAMS, 
-            random_state=RANDOM_STATE,
-            class_weight='balanced' # Handles class balance automatically
-        ))
-    ])
+    # 2. Preprocess (True = scale_numeric, which LR needs)
+    preprocessor = make_preprocessor(True)
+    data_X_processed = preprocessor.fit_transform(data_X)
 
-    # 4. Train Model
-    print(f"Training Logistic Regression on {len(X_train)} samples...")
-    lr_pipeline.fit(X_train, y_train)
+    # 3. Split Data
+    X_train, X_test, y_train, y_test = train_test_split(
+        data_X_processed, data_y, 
+        test_size=TEST_SIZE, 
+        random_state=RANDOM_STATE, 
+        stratify=data_y
+    )
+
+    # 4. Initialize and Train Model
+    lr_model = LogisticRegression(
+        random_state=RANDOM_STATE, 
+        class_weight='balanced',
+    )
+    
+    logger.info("Fitting the Logistic Regression model...")
+    lr_model.fit(X_train, y_train)
 
     # 5. Evaluation
-    y_pred = lr_pipeline.predict(X_test)
-    print("\n--- Model Evaluation ---")
-    print(classification_report(y_test, y_pred))
-    
-    # 6. Inspect Feature "Emphasis" (Weights)
-    feature_names = lr_pipeline.named_steps['preprocessor'].get_feature_names_out()
-    coefficients = lr_pipeline.named_steps['classifier'].coef_[0]
-    
-    importance_df = pd.DataFrame({
-        'Feature': feature_names,
-        'Weight': coefficients
-    }).sort_values(by='Weight', ascending=False)
-    
-    print("\n--- Top Feature Weights (Emphasis) ---")
-    print(importance_df.head(10))
+    y_pred = lr_model.predict(X_test)
+    y_prob = lr_model.predict_proba(X_test)[:, 1]
 
-    # 7. Save Pipeline
-    joblib.dump(lr_pipeline, LR_MODEL_PATH)
-    print(f"\nModel successfully saved to {LR_MODEL_PATH}")
+    logger.info("\n--- Model Evaluation ---")
+    logger.info(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
+    logger.info(f"ROC-AUC: {roc_auc_score(y_test, y_prob):.4f}")
+    logger.info(f"\nClassification Report:\n{classification_report(y_test, y_pred)}")
+
+    # 6. Save Model
+    joblib.dump(lr_model, LR_MODEL_PATH)
+    relative_path = os.path.relpath(LR_MODEL_PATH)
+    logger.info(f"Model saved to {relative_path}")
+    logger.info("Logistic Training Pipeline finished.")
 
 if __name__ == "__main__":
-    train()
+    train_logistic_regression()
