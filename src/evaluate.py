@@ -147,6 +147,12 @@ if __name__ == "__main__":
     
     # Separate features and target
     y_test = df[args.target]
+    
+    # Convert target to numeric if it's Yes/No
+    if y_test.dtype == 'object' and set(y_test.unique()) <= {'Yes', 'No', 'yes', 'no'}:
+        y_test = (y_test.str.lower() == 'yes').astype(int)
+        print(f"Converted target '{args.target}' from Yes/No to 1/0")
+    
     X_test_raw = df.drop(columns=[args.target])
     
     # Load training data to fit preprocessors
