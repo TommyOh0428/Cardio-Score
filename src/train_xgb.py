@@ -64,10 +64,12 @@ def train_xgboost():
     logger.info("\nClassification Report:")
     logger.info(f"\n{classification_report(y_test, y_pred)}")
 
-    # Save Model
+    # Save Model and Preprocessor
     joblib.dump(xgb_model, XGB_MODEL_PATH)
+    joblib.dump(preprocessor, 'models/xgb_preprocessor.joblib')  # Save preprocessor
     relative_path = os.path.relpath(XGB_MODEL_PATH)
     logger.info(f"Model saved to {relative_path}")
+    logger.info(f"Preprocessor saved to models/xgb_preprocessor.joblib")
     logger.info("XGBoost Training Pipeline finished.")
 
 if __name__ == "__main__":

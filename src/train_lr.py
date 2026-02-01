@@ -62,10 +62,12 @@ def train_logistic_regression():
     logger.info(f"ROC-AUC: {roc_auc_score(y_test, y_prob):.4f}")
     logger.info(f"\nClassification Report:\n{classification_report(y_test, y_pred)}")
 
-    # 6. Save Model
+    # 6. Save Model and Preprocessor
     joblib.dump(lr_model, LR_MODEL_PATH)
+    joblib.dump(preprocessor, 'models/lr_preprocessor.joblib')  # Save preprocessor
     relative_path = os.path.relpath(LR_MODEL_PATH)
     logger.info(f"Model saved to {relative_path}")
+    logger.info(f"Preprocessor saved to models/lr_preprocessor.joblib")
     logger.info("Logistic Training Pipeline finished.")
 
 if __name__ == "__main__":
