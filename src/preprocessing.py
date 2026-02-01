@@ -19,6 +19,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+from config import TARGET_COLUMN
+
 
 # feature def
 
@@ -45,8 +47,6 @@ CATEGORICAL_FEATURES: List[str] = [
     "slope",    # slope of peak exercise ST segment
     "thal",     # thalassemia
 ]
-
-TARGET: str = "target"
 
 ALL_FEATURES: List[str] = NUMERIC_FEATURES + BINARY_FEATURES + CATEGORICAL_FEATURES
 
@@ -112,7 +112,7 @@ def make_preprocessor(scale_numeric: bool) -> ColumnTransformer:
 def load_xy(
     csv_path: str,
     *,
-    target: str = TARGET,
+    target: str = TARGET_COLUMN,
     feature_cols: Optional[List[str]] = None,
 ) -> Tuple[pd.DataFrame, pd.Series]:
     """
