@@ -19,7 +19,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-from config import TARGET_COLUMN
+from src.config import TARGET_COLUMN
 
 
 # feature def
