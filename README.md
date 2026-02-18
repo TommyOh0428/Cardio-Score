@@ -19,7 +19,11 @@
 
 ## Demo Video
 
-[![Cardio Score demo video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)]https://youtu.be/9VlthbPYrPU)
+<p align="center">
+  <video src="https://youtu.be/9VlthbPYrPU" width="80%" controls>
+    Your browser does not support the video tag.
+  </video>
+</p>
 
 
 ## Motivation
