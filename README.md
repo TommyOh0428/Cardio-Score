@@ -19,11 +19,10 @@
 
 ## Demo Video
 
-<p align="center">
-  <video src="https://youtu.be/9VlthbPYrPU" width="80%" controls>
-    Your browser does not support the video tag.
-  </video>
-</p>
+<a href="https://youtu.be/9VlthbPYrPU">
+  <img src="https://youtu.be/9VlthbPYrPU" width="600" />
+</a>
+
 
 
 ## Motivation
