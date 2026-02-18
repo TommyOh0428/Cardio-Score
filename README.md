@@ -19,10 +19,7 @@
 
 ## Demo Video
 
-<a href="https://youtu.be/9VlthbPYrPU">
-  <img src="https://youtu.be/9VlthbPYrPU" width="600" />
-</a>
-
+[![Demo Video](https://img.youtube.com)](https://youtu.be/9VlthbPYrPU)
 
 
 ## Motivation
