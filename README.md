@@ -19,7 +19,7 @@
 
 ## Demo Video
 
-[![Demo Video](https://img.youtube.com)](https://www.youtube.com/9VlthbPYrPU)
+[![Demo Video](https://img.youtube.com/vi/9VlthbPYrPU/maxresdefault.jpg)](https://www.youtube.com/watch?v=9VlthbPYrPU)
 
 ## Motivation
 
