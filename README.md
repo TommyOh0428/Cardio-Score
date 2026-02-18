@@ -17,6 +17,11 @@
     <a href="#file-structure">Project Structure</a> 
 </p>
 
+## Demo Video
+
+[![Cardio Score demo video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)]https://youtu.be/9VlthbPYrPU)
+
+
 ## Motivation
 
 Cardiovascular disease remains the leading cause of mortality globally, yet many of its risk factors such as smoking, physical inactivity, and sleep patterns—are modifiable with early intervention. However, traditional medical screenings can be expensive, time-consuming, or inaccessible, leading many individuals to ignore early warning signs until a critical event occurs.
