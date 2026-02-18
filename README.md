@@ -19,7 +19,11 @@
 
 ## Demo Video
 
+<div align="center">
+
 [![Demo Video](https://img.youtube.com/vi/9VlthbPYrPU/hqdefault.jpg)](https://www.youtube.com/watch?v=9VlthbPYrPU)
+
+</div>
 
 ## Motivation
 
